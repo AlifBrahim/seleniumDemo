@@ -1,0 +1,16 @@
+Test Run Started: 2024-11-20 07:43:14.024343
+Test Run Completed: 2024-11-20 07:43:36.257948
+
+Test Results:
++----------------------------------------------------+--------+----------+-------------------------+---------------------+
+| Test Case                                          | Status | Duration | Error Message           | Timestamp           |
++----------------------------------------------------+--------+----------+-------------------------+---------------------+
+| Dynamic Content: Content Loads Successfully        | PASS   | 1.73s    |                         | 2024-11-20 07:43:17 |
+| Dynamic Content: Loading Indicator Appears         | PASS   | 0.08s    |                         | 2024-11-20 07:43:17 |
+| Dynamic Content: Content Updates on Multiple Loads | PASS   | 2.78s    |                         | 2024-11-20 07:43:25 |
+| Dynamic Content: Button State During Loading       | PASS   | 0.06s    |                         | 2024-11-20 07:43:25 |
+| Registration: Valid Registration                   | PASS   | 0.27s    |                         | 2024-11-20 07:43:27 |
+| Registration: Empty Username                       | FAIL   | 0.71s    | Username is required    | 2024-11-20 07:43:28 |
+| Registration: Duplicate Username                   | FAIL   | 1.32s    | Username already exists | 2024-11-20 07:43:35 |
+| Registration: All Fields Valid with Newsletter     | PASS   | 0.74s    |                         | 2024-11-20 07:43:36 |
++----------------------------------------------------+--------+----------+-------------------------+---------------------+

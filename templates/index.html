@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modern Selenium Testing Demo</title>
+    <style>
+        /* Modern CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: #1a2027;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Modern Card Style */
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 1rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* Loading and Dynamic Content */
+        #loading {
+            color: #3b82f6;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #loading::after {
+            content: '';
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Success Message */
+        .success-message {
+            background-color: #86efac;
+            color: #166534;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Selenium Testing Playground</h1>
+
+        <div class="card">
+            <h2>User Registration</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username">
+                </div>
+
+                <div class="form-group">
+                    <label for="dropdown">Select Role</label>
+                    <select id="dropdown" name="role">
+                        <option value="">Choose your role</option>
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Subscribe to our newsletter</label>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary">Create Account</button>
+            </form>
+            <div id="formSuccess" class="success-message"></div>
+            <div id="formError" class="error-message"></div>
+        </div>
+
+        <div class="card">
+            <h2>Dynamic Content</h2>
+            <button id="loadButton" class="btn btn-secondary">Load Content</button>
+            <p id="loading" class="hidden">Loading content...</p>
+            <div id="delayedText" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // Form submission
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                username: document.getElementById('username').value,
+                role: document.getElementById('dropdown').value,
+                newsletter: document.getElementById('newsletter').checked
+            };
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('formSuccess').textContent = data.message;
+                    document.getElementById('formSuccess').style.display = 'block';
+                    document.getElementById('formError').style.display = 'none';
+                    document.getElementById('registrationForm').reset();
+                } else {
+                    document.getElementById('formError').textContent = data.message;
+                    document.getElementById('formError').style.display = 'block';
+                    document.getElementById('formSuccess').style.display = 'none';
+                }
+            } catch (error) {
+                document.getElementById('formError').textContent = 'An error occurred. Please try again.';
+                document.getElementById('formError').style.display = 'block';
+            }
+        });
+
+        // Dynamic content loading
+        document.getElementById('loadButton').addEventListener('click', async function() {
+            const loading = document.getElementById('loading');
+            const delayedText = document.getElementById('delayedText');
+
+            loading.classList.remove('hidden');
+            delayedText.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/load-content');
+                const data = await response.json();
+
+                loading.classList.add('hidden');
+                delayedText.textContent = data.content;
+                delayedText.classList.remove('hidden');
+            } catch (error) {
+                loading.classList.add('hidden');
+                delayedText.textContent = 'Error loading content';
+                delayedText.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
